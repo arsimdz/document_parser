@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template, flash, redirect, url_for
+from flask import Flask, request, render_template, flash, redirect, url_for,send_from_directory
 import os
 from werkzeug.utils import secure_filename
-from doc_parse import doc_parser
+from doc_parse import doc_parser, documents_to_markdown
+import json
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -26,7 +27,12 @@ def upload_file():
         save_location = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(save_location)
         flash('File successfully uploaded')
-        output = doc_parser(save_location)
+        if os.listdir(app.config['UPLOAD_FOLDER'])!=[]:
+            output = doc_parser(app.config['UPLOAD_FOLDER'])
+            output_file = documents_to_markdown(output)
+            return send_from_directory('output',output_file)
+            
+
         return redirect(url_for('upload_file'))
     return render_template('upload.html')
 

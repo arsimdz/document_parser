@@ -3,3 +3,5 @@ python-dotenv
 llama-index-core
 llama-parse
 llama-index-readers-file
+word2txt
+openpyxl

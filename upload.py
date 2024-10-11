@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, flash, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
-
+from doc_parse import doc_parser
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -23,8 +23,10 @@ def upload_file():
             return redirect(request.url)
         
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        save_location = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(save_location)
         flash('File successfully uploaded')
+        output = doc_parser(save_location)
         return redirect(url_for('upload_file'))
     return render_template('upload.html')
 

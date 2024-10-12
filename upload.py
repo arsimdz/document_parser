@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash, redirect, url_for,send_from_directory
+from flask import Flask, request, render_template, flash, redirect, url_for, send_file
 import os
 from werkzeug.utils import secure_filename
 from doc_parse import doc_parser, documents_to_markdown
@@ -30,7 +30,7 @@ def upload_file():
         if os.listdir(app.config['UPLOAD_FOLDER'])!=[]:
             output = doc_parser(app.config['UPLOAD_FOLDER'])
             output_file = documents_to_markdown(output)
-            return send_from_directory('output',output_file)
+            return send_file(output_file,as_attachment=True)
             
 
         return redirect(url_for('upload_file'))
